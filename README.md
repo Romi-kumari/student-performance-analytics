@@ -42,7 +42,7 @@ Start the web app:
 python app.py
 ```
 
-Open `http://127.0.0.1:5001`.
+Open `https://student-performance-analytics-gck1.onrender.com/`.
 
 ## Main pages
 - `/` dashboard and summary KPIs
