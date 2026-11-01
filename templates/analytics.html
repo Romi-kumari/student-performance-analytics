@@ -1,0 +1,560 @@
+
+{% extends "base.html" %}
+
+{% block title %}Analytics & Regression{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div>
+        <p class="eyebrow">DATA SCIENCE</p>
+        <h1>Analytics & Linear Regression</h1>
+        <p>Department-level MongoDB aggregation and model evaluation.</p>
+    </div>
+
+    <a class="button" href="{{ url_for('predict') }}">
+        Predict marks →
+    </a>
+</section>
+
+
+<!-- DEPARTMENT ANALYTICS -->
+
+<section class="panel">
+
+    <h2>Department analytics</h2>
+
+    <p class="muted">
+        These figures are computed live with a MongoDB aggregation pipeline.
+    </p>
+
+    <div class="table-wrap">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Students</th>
+                    <th>Avg previous marks</th>
+                    <th>Avg attendance</th>
+                    <th>Avg final marks</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for d in stats %}
+                <tr>
+                    <td>{{ d._id }}</td>
+                    <td>{{ d.count }}</td>
+                    <td>{{ "%.2f"|format(d.avg_previous or 0) }}</td>
+                    <td>{{ "%.2f"|format(d.avg_attendance or 0) }}%</td>
+                    <td>{{ "%.2f"|format(d.avg_final or 0) }}</td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="5">No data found.</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- REGRESSION EVALUATION -->
+
+<section class="panel">
+
+    <h2>Linear Regression evaluation</h2>
+
+    <p>
+        Features: previous marks, assignment marks, attendance,
+        study hours. Target: final marks.
+    </p>
+
+    {% if model_info.trained %}
+
+    <div class="kpis compact">
+
+        <article class="kpi">
+            <span>Records used</span>
+            <strong>{{ model_info.count }}</strong>
+        </article>
+
+        <article class="kpi">
+            <span>MAE</span>
+            <strong>{{ model_info.mae }}</strong>
+            <small>marks</small>
+        </article>
+
+        <article class="kpi">
+            <span>RMSE</span>
+            <strong>{{ model_info.rmse }}</strong>
+            <small>marks</small>
+        </article>
+
+        <article class="kpi">
+            <span>R² score</span>
+            <strong>{{ model_info.r2 }}</strong>
+        </article>
+
+    </div>
+
+    <p>
+        Training rows: {{ model_info.train_count }}
+        · Test rows: {{ model_info.test_count }}
+    </p>
+
+
+    <!-- ACTUAL VS PREDICTED -->
+
+    <div class="chart-panel">
+
+        <h2>Actual vs Predicted Marks</h2>
+
+        <p class="muted">
+            Comparison of actual student marks with the values predicted
+            by the Linear Regression model.
+        </p>
+
+        <div class="chart-container">
+            <canvas id="actualPredictedChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- RESIDUAL PLOT -->
+
+    <div class="chart-panel">
+
+        <h2>Residual Error Plot</h2>
+
+        <p class="muted">
+            Residuals represent actual marks minus predicted marks.
+            The horizontal zero line represents zero prediction error.
+        </p>
+
+        <div class="chart-container">
+            <canvas id="residualChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- REGRESSION COEFFICIENTS -->
+
+    <div class="chart-panel">
+
+        <h2>Regression Coefficients</h2>
+
+        <p class="muted">
+            Shows the learned coefficient associated with each input feature.
+        </p>
+
+        <div class="chart-container">
+            <canvas id="coefficientChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- DEPARTMENT PERFORMANCE -->
+
+    <div class="chart-panel">
+
+        <h2>Department-wise Average Final Marks</h2>
+
+        <p class="muted">
+            Comparison of average final marks across departments,
+            calculated using MongoDB aggregation.
+        </p>
+
+        <div class="chart-container">
+            <canvas id="departmentChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- COEFFICIENT TABLE -->
+
+    <h3>Learned coefficients</h3>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Coefficient</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for feature, coefficient in model_info.coefficients.items() %}
+                <tr>
+                    <td>{{ feature.replace('_',' ').title() }}</td>
+                    <td>{{ coefficient }}</td>
+                </tr>
+                {% endfor %}
+
+                <tr>
+                    <td>Intercept</td>
+                    <td>{{ model_info.intercept }}</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <p class="muted">
+        Metrics are evaluated on a held-out 20% test set.
+        Synthetic data can produce unrealistically strong results;
+        use an approved real dataset if required by your instructor.
+    </p>
+
+
+    {% else %}
+
+    <p>{{ model_info.message }}</p>
+
+    {% endif %}
+
+</section>
+
+
+{% if model_info.trained %}
+
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    // Regression model output
+    const actualPredictedData =
+        {{ model_info.actual_vs_predicted | tojson }};
+
+    const residualData =
+        {{ model_info.residual_plot | tojson }};
+
+    const featureLabels =
+        {{ model_info.feature_labels | tojson }};
+
+    const coefficientValues =
+        {{ model_info.coefficient_values | tojson }};
+
+
+    // Department aggregation data
+    const departmentLabels =
+        {{ stats | map(attribute='_id') | list | tojson }};
+
+    const departmentMarks =
+        {{ stats | map(attribute='avg_final') | list | tojson }};
+
+
+    // Common chart settings
+    Chart.defaults.font.family = "Inter, Segoe UI, Arial";
+    Chart.defaults.color = "#536078";
+
+
+    // 1. ACTUAL VS PREDICTED CHART
+
+    new Chart(
+        document.getElementById("actualPredictedChart"),
+        {
+            type: "scatter",
+
+            data: {
+                datasets: [
+
+                    {
+                        label: "Predicted marks",
+                        data: actualPredictedData,
+                        backgroundColor: "#4f63df",
+                        pointRadius: 5
+                    },
+
+                    {
+                        label: "Perfect prediction",
+                        data: [
+                            {x: 0, y: 0},
+                            {x: 100, y: 100}
+                        ],
+                        type: "line",
+                        borderColor: "#16a36a",
+                        borderDash: [7, 5],
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }
+
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                },
+
+                scales: {
+                    x: {
+                        type: "linear",
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: "Actual final marks"
+                        }
+                    },
+
+                    y: {
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: "Predicted final marks"
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+
+    // 2. RESIDUAL ERROR CHART
+
+    new Chart(
+        document.getElementById("residualChart"),
+        {
+            type: "scatter",
+
+            data: {
+                datasets: [
+
+                    {
+                        label: "Residual errors",
+                        data: residualData,
+                        backgroundColor: "#e58b35",
+                        pointRadius: 5
+                    },
+
+                    {
+                        label: "Zero error line",
+                        data: [
+                            {x: 0, y: 0},
+                            {x: 100, y: 0}
+                        ],
+                        type: "line",
+                        borderColor: "#dc4b5a",
+                        borderDash: [7, 5],
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }
+
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                },
+
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Predicted final marks"
+                        }
+                    },
+
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Residual error (Actual - Predicted)"
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+
+    // 3. REGRESSION COEFFICIENT CHART
+
+    new Chart(
+        document.getElementById("coefficientChart"),
+        {
+            type: "bar",
+
+            data: {
+                labels: featureLabels,
+
+                datasets: [
+                    {
+                        label: "Regression coefficient",
+                        data: coefficientValues,
+                        backgroundColor: "#6475e8",
+                        borderRadius: 7
+                    }
+                ]
+            },
+
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Coefficient value"
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+
+    // 4. DEPARTMENT PERFORMANCE CHART
+
+    new Chart(
+        document.getElementById("departmentChart"),
+        {
+            type: "bar",
+
+            data: {
+                labels: departmentLabels,
+
+                datasets: [
+                    {
+                        label: "Average final marks",
+                        data: departmentMarks,
+                        backgroundColor: "#4f63df",
+                        borderRadius: 7
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: "Average final marks"
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+</script>
+
+{% endif %}
+
+<section class="panel insights-panel">
+    <h2>Model Insights & Interpretation</h2>
+    <p class="muted">
+        Understand what the Linear Regression model tells us about student performance.
+    </p>
+
+    {% if model_info.trained %}
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+            <span class="insight-icon">📊</span>
+            <h3>Model Performance</h3>
+            <p>
+                The model achieved an R² score of
+                <strong>{{ (model_info.r2 * 100)|round(1) }}%</strong>.
+                This means it explains approximately
+                {{ (model_info.r2 * 100)|round(1) }}% of the variation
+                in final marks on the test dataset.
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <span class="insight-icon">🎯</span>
+            <h3>Prediction Error</h3>
+            <p>
+                The Mean Absolute Error (MAE) is
+                <strong>{{ model_info.mae }} marks</strong>.
+                On average, predictions differ from actual marks
+                by approximately this amount.
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <span class="insight-icon">📚</span>
+            <h3>Important Feature</h3>
+            {% set strongest = model_info.coefficients.items()|max(attribute='1') %}
+            <p>
+                <strong>{{ strongest[0].replace('_', ' ').title() }}</strong>
+                has the largest positive regression coefficient
+                ({{ strongest[1] }}).
+            </p>
+        </div>
+
+        <div class="insight-card">
+            <span class="insight-icon">📈</span>
+            <h3>Prediction Analysis</h3>
+            <p>
+                In the Actual vs Predicted chart, points closer to
+                the diagonal reference line indicate more accurate
+                predictions.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="model-note">
+        <strong>Model limitation:</strong>
+        This model uses synthetic student data. Its results are
+        estimates, not guaranteed academic outcomes. Performance
+        should be evaluated again using an approved real-world dataset.
+    </div>
+
+    {% endif %}
+</section>
+
+{% endblock %}

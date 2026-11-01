@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Student Analytics{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('dashboard') }}">🎓 Student<span>Analytics</span></a>
+  <nav><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="{{ url_for('student_list') }}">Students</a><a href="{{ url_for('analytics') }}">Analytics & Regression</a><a href="{{ url_for('predict') }}">Predict Marks</a>
+  
+
+<div class="nav-auth">
+    {% if current_user.is_authenticated %}
+
+        <span class="welcome-user">
+            Hi, {{ current_user.name }}
+        </span>
+
+        <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <button type="submit" class="logout-button">
+                <span>Logout</span>
+            </button>
+        </form>
+
+    {% else %}
+
+        <a class="auth-link" href="{{ url_for('login') }}">Login</a>
+        <a class="signup-button" href="{{ url_for('signup') }}">Sign Up</a>
+
+    {% endif %}
+</div>
+
+</nav>
+</header>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer>Student Performance & Academic Analytics System · Flask · MongoDB · PyMongo · Linear Regression</footer>
+</body></html>

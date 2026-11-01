@@ -1,0 +1,823 @@
+
+/* =========================================
+   1. GLOBAL STYLES
+========================================= */
+
+:root {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: #182235;
+    background: #f4f7fb;
+    font-synthesis: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+
+/* =========================================
+   2. NAVIGATION BAR
+========================================= */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px max(24px, calc((100vw - 1180px) / 2));
+    background: #ffffff;
+    border-bottom: 1px solid #e6ebf2;
+    gap: 24px;
+    flex-wrap: nowrap;
+    min-height: 80px;
+}
+
+.brand {
+    font-size: 19px;
+    font-weight: 800;
+    text-decoration: none;
+    color: #17233a;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.brand span {
+    color: #4f6bed;
+}
+
+.topbar nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.topbar nav a {
+    color: #536078;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.topbar nav a:hover {
+    color: #4f6bed;
+}
+
+
+/* =========================================
+   3. AUTHENTICATION NAVIGATION
+========================================= */
+
+.nav-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.welcome-user {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    white-space: nowrap;
+}
+
+.logout-form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.logout-button {
+    background: #ffffff;
+    color: #4f46e5;
+    border: 1px solid #dce1f5;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+    transform: translateY(-1px);
+}
+
+.auth-link {
+    color: #334155;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    color: #4f46e5;
+}
+
+.signup-button {
+    background: #4f46e5;
+    color: #ffffff !important;
+    padding: 10px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.signup-button:hover {
+    background: #3730a3;
+}
+
+
+/* =========================================
+   4. MAIN CONTAINER
+========================================= */
+
+.container {
+    max-width: 1180px;
+    margin: 34px auto;
+    padding: 0 22px;
+}
+
+
+/* =========================================
+   5. HERO SECTION
+========================================= */
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    margin: 5px 0 8px;
+    font-size: clamp(26px, 3vw, 36px);
+    letter-spacing: -0.8px;
+}
+
+.hero p {
+    color: #6a7588;
+    margin: 0;
+}
+
+.eyebrow {
+    font-size: 11px !important;
+    letter-spacing: 1.7px;
+    font-weight: 800;
+    color: #5269e8 !important;
+}
+
+
+/* =========================================
+   6. BUTTONS
+========================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #4f63df;
+    color: #ffffff;
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.button:hover {
+    background: #3c50c5;
+}
+
+.button.secondary {
+    background: #eef1f8;
+    color: #43516b;
+}
+
+
+/* =========================================
+   7. DASHBOARD KPI CARDS
+========================================= */
+
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 22px 0;
+}
+
+.kpis.compact {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.kpi,
+.panel {
+    background: #ffffff;
+    border: 1px solid #e6ebf2;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 5px 20px #1b2b4a08;
+}
+
+.kpi span {
+    display: block;
+    color: #758096;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.kpi strong {
+    display: block;
+    font-size: 30px;
+    margin-top: 10px;
+    letter-spacing: -0.6px;
+}
+
+.kpi small {
+    font-size: 14px;
+    color: #7d8799;
+    margin-left: 4px;
+}
+
+
+/* =========================================
+   8. PANELS
+========================================= */
+
+.panel {
+    margin: 18px 0;
+}
+
+.panel h2 {
+    margin: 0 0 8px;
+}
+
+.panel p {
+    color: #6b768a;
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 16px;
+}
+
+.panel-heading h2 {
+    margin: 0;
+}
+
+.panel-heading p {
+    margin: 6px 0 0;
+    font-size: 13px;
+}
+
+.panel-heading a {
+    color: #5267dc;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   9. TABLES
+========================================= */
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th {
+    text-align: left;
+    color: #778196;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #f8f9fc;
+}
+
+td,
+th {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0f5;
+    white-space: nowrap;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================
+   10. TWO COLUMN LAYOUT
+========================================= */
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+
+/* =========================================
+   11. STUDENT ROWS
+========================================= */
+
+.person-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf0f5;
+    gap: 12px;
+}
+
+.person-row:last-child {
+    border-bottom: 0;
+}
+
+.person-row strong,
+.person-row small {
+    display: block;
+}
+
+.person-row small {
+    color: #7a8597;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.score {
+    font-weight: 800;
+    color: #2c9b72;
+}
+
+
+/* =========================================
+   12. SEARCH AND FILTERS
+========================================= */
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.filters input {
+    flex: 1;
+    min-width: 180px;
+}
+
+.filters input,
+.filters select,
+input,
+select {
+    font: inherit;
+    border: 1px solid #dce2ec;
+    border-radius: 9px;
+    padding: 11px 12px;
+    background: #ffffff;
+    color: #202c40;
+    min-width: 0;
+}
+
+
+/* =========================================
+   13. STUDENT ACTIONS
+========================================= */
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.actions a,
+.link {
+    color: #5267dc;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.actions form {
+    margin: 0;
+}
+
+.link {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.danger {
+    color: #d14b5a;
+}
+
+
+/* =========================================
+   14. PAGINATION
+========================================= */
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding-top: 18px;
+    color: #69758a;
+    font-size: 13px;
+}
+
+.pagination div {
+    display: flex;
+    gap: 8px;
+}
+
+
+/* =========================================
+   15. STUDENT FORM
+========================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-grid label,
+.predict-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #435069;
+}
+
+.form-grid input,
+.form-grid select,
+.predict-form input {
+    width: 100%;
+    margin-top: 3px;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+/* =========================================
+   16. PREDICTION FORM
+========================================= */
+
+.predict-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.predict-form button {
+    grid-column: 1 / -1;
+    justify-self: start;
+}
+
+
+/* =========================================
+   17. PREDICTION RESULT
+========================================= */
+
+.prediction-result {
+    background: #eaf8f2;
+    border: 1px solid #cceede;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.prediction-result p {
+    margin: 0;
+    color: #33785c;
+}
+
+.prediction-result strong {
+    font-size: 48px;
+    color: #1b8058;
+}
+
+.prediction-result small {
+    font-size: 17px;
+}
+
+.prediction-result span {
+    font-size: 13px;
+    color: #5c7a6d;
+}
+
+
+/* =========================================
+   18. FLASH MESSAGES
+========================================= */
+
+.flash {
+    padding: 13px 16px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    background: #eef2ff;
+    color: #3c50a6;
+}
+
+.flash.success {
+    background: #e8f8ef;
+    color: #21734a;
+}
+
+.flash.error {
+    background: #fff0f0;
+    color: #b43e4b;
+}
+
+.muted {
+    color: #778196;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   19. LOGIN AND SIGNUP
+========================================= */
+
+.auth-container {
+    max-width: 440px;
+    margin: 45px auto;
+}
+
+.auth-card {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid #e6ebf2;
+    box-shadow: 0 5px 20px #1b2b4a08;
+}
+
+.auth-card h1 {
+    margin-bottom: 8px;
+}
+
+.auth-card label {
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 7px;
+    font-weight: 600;
+}
+
+.auth-card input {
+    width: 100%;
+}
+
+.auth-card button {
+    width: 100%;
+    margin-top: 24px;
+}
+
+
+/* =========================================
+   20. FOOTER
+========================================= */
+
+footer {
+    text-align: center;
+    padding: 28px;
+    color: #8b95a6;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   21. RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1100px) {
+    .topbar {
+        gap: 16px;
+    }
+
+    .topbar nav {
+        gap: 13px;
+    }
+
+    .topbar nav a {
+        font-size: 13px;
+    }
+
+    .nav-auth {
+        gap: 9px;
+    }
+}
+
+@media (max-width: 900px) {
+    .topbar {
+        flex-wrap: wrap;
+    }
+
+    .topbar nav {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .nav-auth {
+        gap: 8px;
+    }
+
+    .welcome-user {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 760px) {
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar nav {
+        gap: 12px;
+    }
+
+    .hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .kpis,
+    .kpis.compact,
+    .two-col,
+    .form-grid,
+    .predict-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        grid-column: auto;
+    }
+
+    .container {
+        margin-top: 22px;
+    }
+
+    .pagination {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* Regression Analytics Charts */
+
+.chart-panel {
+    background: #ffffff;
+    border: 1px solid #e6ebf2;
+    border-radius: 14px;
+    padding: 22px;
+    margin: 24px 0;
+}
+
+.chart-panel h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 20px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    .chart-panel {
+        padding: 14px;
+    }
+
+    .chart-container {
+        height: 280px;
+    }
+}
+
+/* Model Insights Section */
+
+.insights-panel {
+    margin-top: 28px;
+}
+
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.insight-card {
+    background: #f8faff;
+    border: 1px solid #e5eaf5;
+    border-radius: 14px;
+    padding: 22px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.insight-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px #1b2b4a10;
+}
+
+.insight-icon {
+    font-size: 25px;
+}
+
+.insight-card h3 {
+    margin: 12px 0 8px;
+    font-size: 17px;
+    color: #263653;
+}
+
+.insight-card p {
+    margin: 0;
+    color: #68758b;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.insight-card strong {
+    color: #4f63df;
+}
+
+.model-note {
+    margin-top: 22px;
+    padding: 17px 20px;
+    background: #fff8e9;
+    border: 1px solid #f4e4bb;
+    border-radius: 11px;
+    color: #755b2a;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 650px) {
+    .insights-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Student page action buttons */
+
+.student-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.student-actions .button {
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .student-actions {
+        width: 100%;
+    }
+}

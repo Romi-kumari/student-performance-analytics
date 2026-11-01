@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Predict Final Marks{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">PREDICTIVE ANALYTICS</p><h1>Predict final marks</h1><p>Enter student performance indicators to estimate final marks using Linear Regression.</p></div></section>
+<form class="panel predict-form" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label>Previous marks (%)<input type="number" name="previous_marks" min="0" max="100" step="0.1" required value="{{ request.form.get('previous_marks','70') }}"></label>
+<label>Assignment marks (%)<input type="number" name="assignment_marks" min="0" max="100" step="0.1" required value="{{ request.form.get('assignment_marks','75') }}"></label>
+<label>Attendance (%)<input type="number" name="attendance" min="0" max="100" step="0.1" required value="{{ request.form.get('attendance','85') }}"></label>
+<label>Study hours/day<input type="number" name="study_hours" min="0" max="24" step="0.1" required value="{{ request.form.get('study_hours','2') }}"></label>
+<button class="button" type="submit">Predict final marks</button>
+</form>
+{% if prediction is not none %}<section class="prediction-result"><p>Predicted final marks</p><strong>{{ prediction }}<small>/100</small></strong><span>Model estimate only; not a guaranteed result.</span></section>{% endif %}
+{% if error %}<div class="flash error">{{ error }}</div>{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Student Analytics{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">ACADEMIC OVERVIEW</p><h1>Student Performance Dashboard</h1><p>Track academic outcomes, compare departments, and explore student performance.</p></div><a class="button" href="{{ url_for('create_student') }}">+ Add student</a></section>
+<section class="kpis">
+  <article class="kpi"><span>Total students</span><strong>{{ total }}</strong></article>
+  <article class="kpi"><span>Average final marks</span><strong>{{ average_marks }}<small>/100</small></strong></article>
+  <article class="kpi"><span>Pass rate (40+)</span><strong>{{ pass_rate }}<small>%</small></strong></article>
+</section>
+<section class="panel"><div class="panel-heading"><div><h2>Department performance</h2><p>Calculated using MongoDB aggregation.</p></div><a href="{{ url_for('analytics') }}">Full analytics →</a></div>
+{% if department_stats %}<div class="table-wrap"><table><thead><tr><th>Department</th><th>Students</th><th>Average final marks</th></tr></thead><tbody>{% for d in department_stats %}<tr><td>{{ d._id }}</td><td>{{ d.students }}</td><td>{{ "%.2f"|format(d.average_marks or 0) }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p>No records yet. Seed the demo dataset or add a student.</p>{% endif %}</section>
+<div class="two-col">
+<section class="panel"><div class="panel-heading"><div><h2>Top performers</h2><p>Highest final marks.</p></div></div>
+{% for s in top_students %}<div class="person-row"><div><strong>{{ s.name }}</strong><small>{{ s.roll_no }} · {{ s.department }}</small></div><span class="score">{{ s.final_marks }}/100</span></div>{% else %}<p>No students yet.</p>{% endfor %}</section>
+<section class="panel"><div class="panel-heading"><div><h2>Recently updated</h2><p>Latest records.</p></div><a href="{{ url_for('student_list') }}">View all →</a></div>
+{% for s in recent_students %}<div class="person-row"><div><strong>{{ s.name }}</strong><small>{{ s.roll_no }} · Year {{ s.year }}</small></div><a href="{{ url_for('edit_student', student_id=s._id) }}">Edit</a></div>{% else %}<p>No students yet.</p>{% endfor %}</section>
+</div>
+{% endblock %}

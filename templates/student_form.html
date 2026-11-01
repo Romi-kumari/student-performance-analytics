@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Student Analytics{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">STUDENT RECORD</p><h1>{{ title }}</h1><p>Enter valid academic information. Marks and attendance must be from 0 to 100.</p></div></section>
+<form class="panel form-grid" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label>Full name *<input name="name" required minlength="2" maxlength="100" value="{{ student.name if student else '' }}"></label>
+<label>Roll number *<input name="roll_no" required maxlength="30" value="{{ student.roll_no if student else '' }}"></label>
+<label>Department *<select name="department" required>{% for d in ['CSE','IT','ECE','Mechanical','Civil','Business'] %}<option value="{{ d }}" {% if student and student.department == d %}selected{% endif %}>{{ d }}</option>{% endfor %}</select></label>
+<label>Academic year *<input type="number" name="year" required min="1" max="6" value="{{ student.year if student else 2 }}"></label>
+<label>Attendance (%) *<input type="number" name="attendance" required min="0" max="100" step="0.1" value="{{ student.attendance if student else 85 }}"></label>
+<label>Previous marks (%) *<input type="number" name="previous_marks" required min="0" max="100" step="0.1" value="{{ student.previous_marks if student else 70 }}"></label>
+<label>Assignment marks (%) *<input type="number" name="assignment_marks" required min="0" max="100" step="0.1" value="{{ student.assignment_marks if student else 75 }}"></label>
+<label>Study hours/day *<input type="number" name="study_hours" required min="0" max="24" step="0.1" value="{{ student.study_hours if student else 2 }}"></label>
+<label>Final marks (%) *<input type="number" name="final_marks" required min="0" max="100" step="0.1" value="{{ student.final_marks if student else 72 }}"></label>
+<div class="form-actions"><a class="button secondary" href="{{ url_for('student_list') }}">Cancel</a><button class="button" type="submit">Save student</button></div>
+</form>
+{% endblock %}
